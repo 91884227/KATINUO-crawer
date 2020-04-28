@@ -22,7 +22,6 @@ python crawer_for_katino.py  0 2
 ```
 python find_legal_broad.py DERIVER_PATH 
 ```
-> python find_legal_broad.py "C:/Users/Chuck/Desktop/計畫/chromedriver.exe"
 
 | Parameter | meaning | e.g. |
 | -------- | -------- | -------- |
