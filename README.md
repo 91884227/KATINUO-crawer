@@ -10,7 +10,7 @@ python crawer_for_katino.py constrain PROCESS_NUMBER
 
 | Parameter | meaning | e.g. |
 | -------- | -------- | -------- |
-| constrain | 是否限制每個版的最大爬取數 (0: 沒有 1:有) | 0 |
+| constrain | 是否限制每個版的最大爬取數 (0: 沒有 1:每個版只爬三頁) | 0 |
 | PROCESS_NUMBER | cpu process的最大數目 | 2 |
 
 ### usage example
