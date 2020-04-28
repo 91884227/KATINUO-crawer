@@ -15,7 +15,7 @@ python crawer_for_katino.py constrain PROCESS_NUMBER
 
 ### usage example
 ```
-python find_legal_broad.py  0 2 
+python crawer_for_katino.py  0 2 
 ```
 ## find_legal_board.py
 ### usage Parameter
