@@ -6,7 +6,6 @@
 # In[1]:
 
 
-from selenium import webdriver
 import time, re
 from bs4 import BeautifulSoup
 from tqdm import tqdm
@@ -15,30 +14,24 @@ import itertools
 import pandas as pd
 import sys
 import warnings
+import requests
 warnings.filterwarnings("ignore")
+import multiprocessing as mp
 
 
-# In[2]:
+# # find max page
 
-
-#driver = webdriver.Chrome("C:/Users/Chuck/Desktop/計畫/chromedriver.exe")
-
-
-# In[3]:
+# In[ ]:
 
 
 class board_crawer:
-    def __init__(self, driver_path_, board_ = 3867, constrain_ = True):
+    def __init__(self, board_ = 3867, constrain_ = True):
         self.board = board_
-        self.driver_path = driver_path_
+        self.my_headers =  {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36"}
         
         print("start to get data from %d BOARD" % self.board)
         print("find max page of %d board" % self.board)
         self.get_max_page(constrain_)
-        
-        print("load webdriver...")
-        self.driver = webdriver.Chrome(self.driver_path)
-        self.driver.implicitly_wait(3)
         
         print("create url list")
         temp = "https://ck101.com/forum-%d-" % self.board
@@ -46,12 +39,15 @@ class board_crawer:
         
         print("start to get all the block")
         buf = [ self.URL_find_block(i) for i in tqdm(list_URL)]
-        self.driver.close() 
+        
+#         pool = mp.Pool(processes = 3)
+#         pool.map(self.URL_find_block, tqdm(list_URL))
+        
         list_block = list(itertools.chain(*buf))  
 
         print("start to get title and data from block")
         try:
-            self.data = [ self.block_get_title_data(i) for i in tqdm(list_block)]
+            self.data = [ self.block_get_title_data(i) for i in list_block]
             print("success to get %d board data" % self.board)
         except:
             print("fail to get %d board data" % self.board)
@@ -62,21 +58,23 @@ class board_crawer:
             self.MAX_page = 3
         else:
             try:
-                driver = webdriver.Chrome(self.driver_path)
+                #
                 url =  "https://ck101.com/forum-%d-1.html" % self.board
-                driver.get(url) 
-                soup =  BeautifulSoup(driver.page_source)
+                r = requests.get(url, headers = self.my_headers)
+                soup =  BeautifulSoup(r.text)
                 buf = soup.select(".pageNumber")[0].text
                 self.MAX_page = int(buf.replace("\n",'').replace("/",''))
                 print("Success to get Max page of %s: %d" % (url, self.MAX_page))
             except:
                 print("fail to get Max page of %s" % url)
-            driver.close() 
             
     def URL_find_block(self, URL_):
+        buf = None
         try:
-            self.driver.get(URL_) 
-            soup = BeautifulSoup(self.driver.page_source)
+            #print(URL_)
+            time.sleep(0.5)
+            r = requests.get(URL_, headers = self.my_headers)
+            soup = BeautifulSoup(r.text)
             buf = soup.select(".subject")
         except:
             print("error in block_get_title_data: %s" % URL_)
@@ -94,48 +92,4 @@ class board_crawer:
            # print(block_)
 
         return( (buf_title, buf_date, self.board) )    
-    
-
-
-# In[4]:
-
-
-# test = board_crawer("C:/Users/Chuck/Desktop/計畫/chromedriver.exe", 
-#                    constrain_ = True)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
 
